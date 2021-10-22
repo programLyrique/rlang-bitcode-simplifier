@@ -20,16 +20,18 @@ int main(int argc, char *argv[])
     std::cout << "R bitcode simplifier" << std::endl;
 
     SMDiagnostic error;
-    std::string baseFname = argv[1];
-    Module *base = parseIRFile(baseFname, error, context).release();
-    if (!base)
+    std::string moduleName = argv[1];
+    Module *m = parseIRFile(moduleName, error, context).release();
+    if (!m)
     {
-        errs() << "ERROR: Cannot read IR file " << baseFname << "\n";
+        errs() << "ERROR: Cannot read IR file " << moduleName << "\n";
         error.print(argv[0], errs());
         exit(1);
     }
 
-    delete base;
+    m->print(llvm::errs(), nullptr); //dump is not included with LLVM in Release mode
+
+    delete m;
 
     return 0;
 }
